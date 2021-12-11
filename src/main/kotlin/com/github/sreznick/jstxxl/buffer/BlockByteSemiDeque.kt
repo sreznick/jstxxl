@@ -8,7 +8,7 @@ import java.nio.ByteBuffer
  * A wrapper for the ByteBuffer class for internal use.
  * Does not perform additional bound checks.
  */
-internal class BlockByteSemiDeque(val blockSizeBytes: Int, val capacityBlocks: Int, bufferProvider: ByteBufferProvider) {
+class BlockByteSemiDeque(val blockSizeBytes: Int, val capacityBlocks: Int, bufferProvider: ByteBufferProvider) {
     private val innerBuffer: ByteBuffer = bufferProvider.getBuffer(blockSizeBytes * capacityBlocks)
     private var currentHeadBlock: Int = 0
     private var currentSizeBytes: Int = 0
@@ -54,6 +54,14 @@ internal class BlockByteSemiDeque(val blockSizeBytes: Int, val capacityBlocks: I
     fun getChar(index: Int): Char = innerBuffer.getChar(charIndexToInner(index))
     fun getFloat(index: Int): Float = innerBuffer.getFloat(floatIndexToInner(index))
     fun getDouble(index: Int): Double = innerBuffer.getDouble(doubleIndexToInner(index))
+
+    fun isEmptyBytes() = sizeBytes == 0
+    fun isEmptyShorts() = sizeShorts == 0
+    fun isEmptyInts() = sizeInts == 0
+    fun isEmptyLongs() = sizeLongs == 0
+    fun isEmptyChars() = sizeChars == 0
+    fun isEmptyFloats() = sizeFloats == 0
+    fun isEmptyDoubles() = sizeDoubles == 0
 
     private fun byteIndexToInner(index: Int): Int = indexToInner(index, headByte, capacityBytes)
     private fun shortIndexToInner(index: Int): Int = indexToInner(index, headShort, capacityShorts)
@@ -174,11 +182,10 @@ internal class BlockByteSemiDeque(val blockSizeBytes: Int, val capacityBlocks: I
 
     companion object {
         private fun indexToInner(index: Int, head: Int, cap: Int): Int {
-            var innerIndex = index + head
-            if (innerIndex >= cap) {
-                innerIndex -= cap
-            }
-            return innerIndex
+            val innerIndex = index + head
+            // Если я правильно понимаю, то лучше сделать взятие по модулю
+            // index может быть отрицательным или очень большим
+            return innerIndex % cap
         }
     }
 }
