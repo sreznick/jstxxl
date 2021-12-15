@@ -11,13 +11,10 @@ import java.io.RandomAccessFile
 import java.util.stream.Stream
 
 internal class IntStackBasicTest {
-    // TODO: parametrize this more
     @ParameterizedTest
     @MethodSource("arguments")
     fun `Pushing a list of values and then popping them all works`(size: Long) {
-        // TODO: factor out this dependency
-        val storage = RandomAccessFileSyncStorage(RandomAccessFile("int-stack-data.bin", "rw"))
-        val intStackBasic = IntStackBasic(storage, AllocatingByteBufferProvider(false))
+        val intStackBasic = IntStackBasic("int-stack-data.bin", AllocatingByteBufferProvider(false))
         for (i in 0 until size) {
             intStackBasic.pushInt(randomLongToInt(i))
             assert(intStackBasic.size == i + 1)
@@ -28,7 +25,6 @@ internal class IntStackBasicTest {
     }
 
     companion object {
-        // TODO: make this a reusable class
         @JvmStatic
         fun arguments(): Stream<Arguments> {
             val sizes = listOf(0, 1, 2, 10, 1024, 1_000_000, 1L shl 20)
