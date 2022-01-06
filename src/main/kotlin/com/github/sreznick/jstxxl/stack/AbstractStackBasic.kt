@@ -2,11 +2,12 @@ package com.github.sreznick.jstxxl.stack
 
 import com.github.sreznick.jstxxl.buffer.BlockByteSemiDeque
 import com.github.sreznick.jstxxl.platformdeps.bytebuffer.ByteBufferProvider
-import com.github.sreznick.jstxxl.platformdeps.storage.SyncStorage
+import com.github.sreznick.jstxxl.platformdeps.storage.RandomAccessFileSyncStorage
+import java.io.RandomAccessFile
 import java.util.EmptyStackException
 
 abstract class AbstractStackBasic(
-    private val storage: SyncStorage,
+    stackFileName: String,
     bufferProvider: ByteBufferProvider
 ) {
     protected var currentBlocksOnDisk: Long = 0
@@ -18,8 +19,10 @@ abstract class AbstractStackBasic(
     protected abstract fun unitSize(): Int
 
     protected val stackTop by lazy {
-        BlockByteSemiDeque(BLOCK_SIZE, 2, bufferProvider)
+        BlockByteSemiDeque(BLOCK_SIZE, 8, bufferProvider)
     }
+
+    private val storage = RandomAccessFileSyncStorage(RandomAccessFile(stackFileName, "rw"))
 
     protected fun mustNotBeEmpty() {
         if (isEmpty()) {
