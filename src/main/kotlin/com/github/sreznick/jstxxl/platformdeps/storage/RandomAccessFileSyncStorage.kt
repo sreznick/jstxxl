@@ -15,4 +15,8 @@ class RandomAccessFileSyncStorage(private val file: RandomAccessFile) : SyncStor
     override fun seek(position: Long) {
         file.seek(position)
     }
+
+    override fun close() {
+        file.close()
+    }
 }
