@@ -1,5 +1,6 @@
 package com.github.sreznick.jstxxl.buffer
 
+import com.github.sreznick.jstxxl.blob_helper.BlobElement
 import com.github.sreznick.jstxxl.platformdeps.bytebuffer.ByteBufferProvider
 import com.github.sreznick.jstxxl.platformdeps.storage.SyncStorage
 import java.nio.ByteBuffer
@@ -37,6 +38,7 @@ class BlockByteSemiDeque(
     val capacityHeadChars: Int get() = capacityHeadBytes / Char.SIZE_BYTES
     val capacityHeadFloats: Int get() = capacityHeadBytes / Float.SIZE_BYTES
     val capacityHeadDoubles: Int get() = capacityHeadBytes / Double.SIZE_BYTES
+    val capacityHeadBlobElement: Int get() = capacityHeadBytes / BlobElement.SIZE_BYTES
 
     val capacityTailBytes: Int get() = capacityTailBlocks * blockSizeBytes
     val capacityTailShorts: Int get() = capacityTailBytes / Short.SIZE_BYTES
@@ -45,6 +47,7 @@ class BlockByteSemiDeque(
     val capacityTailChars: Int get() = capacityTailBytes / Char.SIZE_BYTES
     val capacityTailFloats: Int get() = capacityTailBytes / Float.SIZE_BYTES
     val capacityTailDoubles: Int get() = capacityTailBytes / Double.SIZE_BYTES
+    val capacityTailBlobElement: Int get() = capacityTailBytes / BlobElement.SIZE_BYTES
 
     val sizeHeadBytes: Int get() = currentHeadSizeBytes
     val sizeHeadShorts: Int get() = sizeHeadBytes / Short.SIZE_BYTES
@@ -53,6 +56,7 @@ class BlockByteSemiDeque(
     val sizeHeadChars: Int get() = sizeHeadBytes / Char.SIZE_BYTES
     val sizeHeadFloats: Int get() = sizeHeadBytes / Float.SIZE_BYTES
     val sizeHeadDoubles: Int get() = sizeHeadBytes / Double.SIZE_BYTES
+    val sizeHeadBlobElement: Int get() = sizeHeadBytes / BlobElement.SIZE_BYTES
 
     val sizeTailBytes: Int get() = currentTailSizeBytes
     val sizeTailShorts: Int get() = sizeTailBytes / Short.SIZE_BYTES
@@ -61,6 +65,7 @@ class BlockByteSemiDeque(
     val sizeTailChars: Int get() = sizeTailBytes / Char.SIZE_BYTES
     val sizeTailFloats: Int get() = sizeTailBytes / Float.SIZE_BYTES
     val sizeTailDoubles: Int get() = sizeTailBytes / Double.SIZE_BYTES
+    val sizeTailBlobElement: Int get() = sizeTailBytes / BlobElement.SIZE_BYTES
 
     val blockSizeShorts: Int get() = blockSizeBytes / Short.SIZE_BYTES
     val blockSizeInts: Int get() = blockSizeBytes / Int.SIZE_BYTES
@@ -68,6 +73,7 @@ class BlockByteSemiDeque(
     val blockSizeChars: Int get() = blockSizeBytes / Char.SIZE_BYTES
     val blockSizeFloats: Int get() = blockSizeBytes / Float.SIZE_BYTES
     val blockSizeDoubles: Int get() = blockSizeBytes / Double.SIZE_BYTES
+    val blockSizeBlobElement: Int get() = blockSizeBytes / BlobElement.SIZE_BYTES
 
     private val headByte: Int get() = currentHeadBlock * blockSizeBytes
     private val headShort: Int get() = currentHeadBlock * blockSizeShorts
@@ -76,6 +82,7 @@ class BlockByteSemiDeque(
     private val headChar: Int get() = currentHeadBlock * blockSizeChars
     private val headFloat: Int get() = currentHeadBlock * blockSizeFloats
     private val headDouble: Int get() = currentHeadBlock * blockSizeDoubles
+    private val headBlobElement: Int get() = currentHeadBlock * blockSizeBlobElement
 
     private val tailByte: Int get() = currentTailBlock * blockSizeBytes
     private val tailShort: Int get() = currentTailBlock * blockSizeShorts
@@ -84,6 +91,7 @@ class BlockByteSemiDeque(
     private val tailChar: Int get() = currentTailBlock * blockSizeChars
     private val tailFloat: Int get() = currentTailBlock * blockSizeFloats
     private val tailDouble: Int get() = currentTailBlock * blockSizeDoubles
+    private val tailBlobElement: Int get() = currentTailBlock * blockSizeBlobElement
 
     fun getHeadByte(index: Int): Byte = headInnerBuffer.get(byteHeadIndexToInner(index))
     fun getHeadShort(index: Int): Short = headInnerBuffer.getShort(shortHeadIndexToInner(index))
@@ -92,6 +100,9 @@ class BlockByteSemiDeque(
     fun getHeadChar(index: Int): Char = headInnerBuffer.getChar(charHeadIndexToInner(index))
     fun getHeadFloat(index: Int): Float = headInnerBuffer.getFloat(floatHeadIndexToInner(index))
     fun getHeadDouble(index: Int): Double = headInnerBuffer.getDouble(doubleHeadIndexToInner(index))
+    fun getHeadBlobElement(index: Int): BlobElement {
+        TODO("Implement NOW")
+    }
 
     fun getTailByte(index: Int): Byte = tailInnerBuffer.get(byteTailIndexToInner(index))
     fun getTailShort(index: Int): Short = tailInnerBuffer.getShort(shortTailIndexToInner(index))
@@ -100,6 +111,9 @@ class BlockByteSemiDeque(
     fun getTailChar(index: Int): Char = tailInnerBuffer.getChar(charTailIndexToInner(index))
     fun getTailFloat(index: Int): Float = tailInnerBuffer.getFloat(floatTailIndexToInner(index))
     fun getTailDouble(index: Int): Double = tailInnerBuffer.getDouble(doubleTailIndexToInner(index))
+    fun getTailBlobElement(index: Int): BlobElement {
+        TODO("Implement NOW")
+    }
 
     fun isEmptyHeadBytes() = sizeHeadBytes == 0
     fun isEmptyHeadShorts() = sizeHeadShorts == 0
@@ -108,6 +122,7 @@ class BlockByteSemiDeque(
     fun isEmptyHeadChars() = sizeHeadChars == 0
     fun isEmptyHeadFloats() = sizeHeadFloats == 0
     fun isEmptyHeadDoubles() = sizeHeadDoubles == 0
+    fun isEmptyHeadBlobElement() = sizeHeadBlobElement == 0
 
     fun isEmptyTailBytes() = sizeTailBytes == 0
     fun isEmptyTailShorts() = sizeTailShorts == 0
@@ -116,6 +131,7 @@ class BlockByteSemiDeque(
     fun isEmptyTailChars() = sizeTailChars == 0
     fun isEmptyTailFloats() = sizeTailFloats == 0
     fun isEmptyTailDoubles() = sizeTailDoubles == 0
+    fun isEmptyTailBlobElement() = sizeTailBlobElement == 0
 
     private fun byteHeadIndexToInner(index: Int): Int = indexToInner(index, 0, capacityHeadBytes)
     private fun shortHeadIndexToInner(index: Int): Int = indexToInner(index, 0, capacityHeadShorts)
@@ -124,6 +140,9 @@ class BlockByteSemiDeque(
     private fun charHeadIndexToInner(index: Int): Int = indexToInner(index, 0, capacityHeadChars)
     private fun floatHeadIndexToInner(index: Int): Int = indexToInner(index, 0, capacityHeadFloats)
     private fun doubleHeadIndexToInner(index: Int): Int = indexToInner(index, 0, capacityHeadDoubles)
+    private fun blobElementHeadIndexToInner(index: Int): Int {
+        TODO("Implement NOW")
+    }
 
     private fun byteTailIndexToInner(index: Int): Int = indexToInner(index, tailByte, capacityTailBytes)
     private fun shortTailIndexToInner(index: Int): Int = indexToInner(index, tailShort, capacityTailShorts)
@@ -132,6 +151,9 @@ class BlockByteSemiDeque(
     private fun charTailIndexToInner(index: Int): Int = indexToInner(index, tailChar, capacityTailChars)
     private fun floatTailIndexToInner(index: Int): Int = indexToInner(index, tailFloat, capacityTailFloats)
     private fun doubleTailIndexToInner(index: Int): Int = indexToInner(index, tailDouble, capacityTailDoubles)
+    private fun blobElementTailIndexToInner(index: Int): Int {
+        TODO("implement NOW")
+    }
 
     fun popBackBlockInto(writer: SyncStorage) {
         mustHaveAtLeastOneFullTailBlock()
@@ -193,6 +215,13 @@ class BlockByteSemiDeque(
         currentTailSizeBytes += Double.SIZE_BYTES
     }
 
+    fun pushBackBlobElement(item: BlobElement) {
+        for (i in item.data.indices){
+            pushBackByte(item.data[i])
+        }
+    }
+
+
     fun popBackByte(): Byte {
         currentTailSizeBytes -= Byte.SIZE_BYTES
         return tailInnerBuffer.get(byteTailIndexToInner(currentTailSizeBytes))
@@ -226,6 +255,14 @@ class BlockByteSemiDeque(
     fun popBackDouble(): Double {
         currentTailSizeBytes -= Double.SIZE_BYTES
         return tailInnerBuffer.getDouble(byteTailIndexToInner(currentTailSizeBytes))
+    }
+
+    fun popBackBlobElement(): BlobElement {
+        val tmpArray = Array<Byte>(BlobElement.SIZE_BYTES){ 0 }
+        for (i in tmpArray.indices.reversed()) {
+            tmpArray[i] = popBackByte()
+        }
+        return BlobElement(tmpArray)
     }
 
     fun pushFrontByte(item: Byte) {
@@ -290,6 +327,14 @@ class BlockByteSemiDeque(
         headInnerBuffer.getDouble(byteHeadIndexToInner(headByte - currentHeadSizeBytes)).also {
             currentHeadSizeBytes -= Double.SIZE_BYTES
         }
+
+    fun popFrontBlobElement(): BlobElement {
+        val tmpArray = Array<Byte>(BlobElement.SIZE_BYTES){ 0 }
+        for (i in tmpArray.indices) {
+            tmpArray[i] = popFrontByte()
+        }
+        return BlobElement(tmpArray)
+    }
 
     private fun incTailBlock() {
         if (++currentTailBlock == capacityTailBlocks) {
