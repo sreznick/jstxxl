@@ -101,7 +101,12 @@ class BlockByteSemiDeque(
     fun getHeadFloat(index: Int): Float = headInnerBuffer.getFloat(floatHeadIndexToInner(index))
     fun getHeadDouble(index: Int): Double = headInnerBuffer.getDouble(doubleHeadIndexToInner(index))
     fun getHeadBlobElement(index: Int): BlobElement {
-        TODO("Implement NOW")
+        val innerIndex = blobElementHeadIndexToInner(index)
+        val tmpArray = Array<Byte>(BlobElement.SIZE_BYTES) { 0 }
+        for (i in tmpArray.indices) {
+            tmpArray[i] = headInnerBuffer.get(innerIndex + i)
+        }
+        return BlobElement(tmpArray)
     }
 
     fun getTailByte(index: Int): Byte = tailInnerBuffer.get(byteTailIndexToInner(index))
@@ -112,7 +117,12 @@ class BlockByteSemiDeque(
     fun getTailFloat(index: Int): Float = tailInnerBuffer.getFloat(floatTailIndexToInner(index))
     fun getTailDouble(index: Int): Double = tailInnerBuffer.getDouble(doubleTailIndexToInner(index))
     fun getTailBlobElement(index: Int): BlobElement {
-        TODO("Implement NOW")
+        val innerIndex = blobElementTailIndexToInner(index)
+        val tmpArray = Array<Byte>(BlobElement.SIZE_BYTES) { 0 }
+        for (i in tmpArray.indices) {
+            tmpArray[i] = headInnerBuffer.get(innerIndex + i)
+        }
+        return BlobElement(tmpArray)
     }
 
     fun isEmptyHeadBytes() = sizeHeadBytes == 0
@@ -140,9 +150,7 @@ class BlockByteSemiDeque(
     private fun charHeadIndexToInner(index: Int): Int = indexToInner(index, 0, capacityHeadChars)
     private fun floatHeadIndexToInner(index: Int): Int = indexToInner(index, 0, capacityHeadFloats)
     private fun doubleHeadIndexToInner(index: Int): Int = indexToInner(index, 0, capacityHeadDoubles)
-    private fun blobElementHeadIndexToInner(index: Int): Int {
-        TODO("Implement NOW")
-    }
+    private fun blobElementHeadIndexToInner(index: Int): Int = indexToInner(index, 0, capacityHeadBlobElement)
 
     private fun byteTailIndexToInner(index: Int): Int = indexToInner(index, tailByte, capacityTailBytes)
     private fun shortTailIndexToInner(index: Int): Int = indexToInner(index, tailShort, capacityTailShorts)
@@ -151,9 +159,8 @@ class BlockByteSemiDeque(
     private fun charTailIndexToInner(index: Int): Int = indexToInner(index, tailChar, capacityTailChars)
     private fun floatTailIndexToInner(index: Int): Int = indexToInner(index, tailFloat, capacityTailFloats)
     private fun doubleTailIndexToInner(index: Int): Int = indexToInner(index, tailDouble, capacityTailDoubles)
-    private fun blobElementTailIndexToInner(index: Int): Int {
-        TODO("implement NOW")
-    }
+    private fun blobElementTailIndexToInner(index: Int): Int =
+        indexToInner(index, tailBlobElement, capacityTailBlobElement)
 
     fun popBackBlockInto(writer: SyncStorage) {
         mustHaveAtLeastOneFullTailBlock()
@@ -216,7 +223,7 @@ class BlockByteSemiDeque(
     }
 
     fun pushBackBlobElement(item: BlobElement) {
-        for (i in item.data.indices){
+        for (i in item.data.indices) {
             pushBackByte(item.data[i])
         }
     }
@@ -258,7 +265,7 @@ class BlockByteSemiDeque(
     }
 
     fun popBackBlobElement(): BlobElement {
-        val tmpArray = Array<Byte>(BlobElement.SIZE_BYTES){ 0 }
+        val tmpArray = Array<Byte>(BlobElement.SIZE_BYTES) { 0 }
         for (i in tmpArray.indices.reversed()) {
             tmpArray[i] = popBackByte()
         }
@@ -290,6 +297,10 @@ class BlockByteSemiDeque(
     }
 
     fun pushFrontDouble(item: Double) {
+        TODO("Not yet implemented")
+    }
+
+    fun pushFrontBlobElement(item: BlobElement) {
         TODO("Not yet implemented")
     }
 
@@ -329,7 +340,7 @@ class BlockByteSemiDeque(
         }
 
     fun popFrontBlobElement(): BlobElement {
-        val tmpArray = Array<Byte>(BlobElement.SIZE_BYTES){ 0 }
+        val tmpArray = Array<Byte>(BlobElement.SIZE_BYTES) { 0 }
         for (i in tmpArray.indices) {
             tmpArray[i] = popFrontByte()
         }

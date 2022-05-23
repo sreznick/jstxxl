@@ -94,5 +94,4 @@ class Blob {
         }
         blobConvertible.setDataFromBytes(data)
     }
-
 }
