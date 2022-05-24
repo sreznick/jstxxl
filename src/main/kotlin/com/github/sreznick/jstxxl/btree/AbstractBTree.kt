@@ -6,7 +6,7 @@ import java.io.RandomAccessFile
 import java.nio.ByteBuffer
 
 abstract class AbstractBTree<Key : Comparable<Key>, Value>(
-    private val fileName: String
+    protected val fileName: String
 ) {
     private var height = 0
     private var size = 0
@@ -14,13 +14,13 @@ abstract class AbstractBTree<Key : Comparable<Key>, Value>(
     private var counterFiles = 1
     private var root = Node(0)
 
-    private inner class Node(
+    protected inner class Node(
         var numberOfEntries: Int
     ) {
         val entries = arrayOfNulls<Entry>(MAX_ENTRIES)
     }
 
-    private inner class Entry(
+    protected inner class Entry(
         var key: Key,
         var value: Value?,
         var child: Int = -1
@@ -37,13 +37,13 @@ abstract class AbstractBTree<Key : Comparable<Key>, Value>(
         return height
     }
 
-    abstract fun keySizeBytes(): Int
+    protected abstract fun keySizeBytes(): Int
 
-    abstract fun valueSizeBytes(): Int
+    protected abstract fun valueSizeBytes(): Int
 
     abstract fun readKey(byteBuffer: ByteBuffer): Key
 
-    abstract fun readValue(byteBuffer: ByteBuffer): Value
+    abstract fun readValue(byteBuffer: ByteBuffer): Value?
 
     abstract fun writeKey(key: Key, byteBuffer: ByteBuffer)
 
@@ -153,7 +153,7 @@ abstract class AbstractBTree<Key : Comparable<Key>, Value>(
         return counterFiles++
     }
 
-    private fun readNode(number: Int): Node {
+    protected open fun readNode(number: Int): Node {
         val storage = RandomAccessFileSyncStorage(RandomAccessFile(File(fileName + number), "rw"))
 
         val size = Int.SIZE_BYTES + MAX_ENTRIES * (keySizeBytes() + valueSizeBytes() + Int.SIZE_BYTES)
@@ -173,7 +173,7 @@ abstract class AbstractBTree<Key : Comparable<Key>, Value>(
         return node
     }
 
-    private fun saveNode(node: Node, number: Int) {
+    protected open fun saveNode(node: Node, number: Int) {
         val storage = RandomAccessFileSyncStorage(RandomAccessFile(File(fileName + number), "rw"))
 
         val size = Int.SIZE_BYTES + MAX_ENTRIES * (keySizeBytes() + valueSizeBytes() + Int.SIZE_BYTES)
@@ -188,7 +188,10 @@ abstract class AbstractBTree<Key : Comparable<Key>, Value>(
         storage.close()
     }
 
+
+
     companion object {
-        private const val MAX_ENTRIES = 512
+        @JvmStatic
+        protected val MAX_ENTRIES = 512
     }
 }
