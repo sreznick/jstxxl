@@ -50,7 +50,7 @@ class Blob {
             if ((amountOfData + Int.SIZE_BYTES) % BlobElement.SIZE_BYTES == 0)
                 (amountOfData + Int.SIZE_BYTES) / BlobElement.SIZE_BYTES
             else (amountOfData + Int.SIZE_BYTES) / BlobElement.SIZE_BYTES + 1
-        blobElements = Array(amountOfBlobElements) { BlobElement(arrayOf(0)) }
+        blobElements = Array(amountOfBlobElements) { BlobElement() }
     }
 
     /**
@@ -63,20 +63,34 @@ class Blob {
         amountOfData = tempArray.size
         amountOfBlobElements =
             if ((amountOfData + Int.SIZE_BYTES) % BlobElement.SIZE_BYTES == 0)
-                    (amountOfData + Int.SIZE_BYTES) / BlobElement.SIZE_BYTES
+                (amountOfData + Int.SIZE_BYTES) / BlobElement.SIZE_BYTES
             else (amountOfData + Int.SIZE_BYTES) / BlobElement.SIZE_BYTES + 1
-        blobElements = Array(amountOfBlobElements) { BlobElement(arrayOf(0)) }
+        blobElements = Array(amountOfBlobElements) { BlobElement() }
         for (i in 0 until Int.SIZE_BYTES) {
-            buffer[i] = ((amountOfData ushr (8 * i)) % 256).toByte()
+            blobElements[0].data[i] = ((amountOfData ushr (8 * i)) % 256).toByte()
         }
         for (i in Int.SIZE_BYTES until (amountOfData + Int.SIZE_BYTES)) {
-            if (i % BlobElement.SIZE_BYTES == 0) {
-                blobElements[i / BlobElement.SIZE_BYTES - 1] = (BlobElement(buffer))
-                buffer = Array(BlobElement.SIZE_BYTES) { 0 }
-            }
-            buffer[i % BlobElement.SIZE_BYTES] = tempArray[i - Int.SIZE_BYTES]
+            blobElements[i / BlobElement.SIZE_BYTES].data[i % BlobElement.SIZE_BYTES] = tempArray[i - Int.SIZE_BYTES]
         }
-        blobElements[amountOfBlobElements - 1] = BlobElement(buffer)
+//        var buffer = Array<Byte>(BlobElement.SIZE_BYTES) { 0 }
+//        val tempArray = obj.toByteArray()
+//        amountOfData = tempArray.size
+//        amountOfBlobElements =
+//            if ((amountOfData + Int.SIZE_BYTES) % BlobElement.SIZE_BYTES == 0)
+//                (amountOfData + Int.SIZE_BYTES) / BlobElement.SIZE_BYTES
+//            else (amountOfData + Int.SIZE_BYTES) / BlobElement.SIZE_BYTES + 1
+//        blobElements = Array(amountOfBlobElements) { BlobElement(arrayOf(0)) }
+//        for (i in 0 until Int.SIZE_BYTES) {
+//            buffer[i] = ((amountOfData ushr (8 * i)) % 256).toByte()
+//        }
+//        for (i in Int.SIZE_BYTES until (amountOfData + Int.SIZE_BYTES)) {
+//            if (i % BlobElement.SIZE_BYTES == 0) {
+//                blobElements[i / BlobElement.SIZE_BYTES - 1] = (BlobElement(buffer))
+//                buffer = Array(BlobElement.SIZE_BYTES) { 0 }
+//            }
+//            buffer[i % BlobElement.SIZE_BYTES] = tempArray[i - Int.SIZE_BYTES]
+//        }
+//        blobElements[amountOfBlobElements - 1] = BlobElement(buffer)
     }
 
     /**
