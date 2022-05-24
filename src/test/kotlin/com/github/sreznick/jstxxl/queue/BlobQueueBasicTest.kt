@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 
-class BlobQueueTest {
+class BlobQueueBasicTest {
     @ParameterizedTest
     @MethodSource("arguments")
     fun `Pushing a list of values and then popping them all works`(size: Long) {
@@ -52,4 +52,3 @@ class BlobQueueTest {
         }
     }
 }
-

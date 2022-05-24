@@ -58,7 +58,6 @@ class Blob {
      * @param obj object to create BLOB
      */
     constructor(obj: BlobConvertible) {
-        var buffer = Array<Byte>(BlobElement.SIZE_BYTES) { 0 }
         val tempArray = obj.toByteArray()
         amountOfData = tempArray.size
         amountOfBlobElements =

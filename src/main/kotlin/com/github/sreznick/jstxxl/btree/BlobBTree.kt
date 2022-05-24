@@ -73,8 +73,7 @@ class BlobBTree(fileName: String) : AbstractBTree<Int, Blob>(fileName) {
                 Int.SIZE_BYTES + keySizeBytes() + 1
             }
         }
-        val byteBuffer = ByteBuffer.allocate(size).putInt(size - 2 * Int.SIZE_BYTES).putInt(node.numberOfEntries)
-
+        val byteBuffer = ByteBuffer.allocate(size).putInt(node.numberOfEntries).putInt((size - 2 * Int.SIZE_BYTES))
         for (j in 0 until node.numberOfEntries) {
             writeKey(node.entries[j]?.key!!, byteBuffer)
             writeValue(node.entries[j]?.value, byteBuffer)
@@ -90,8 +89,8 @@ class BlobBTree(fileName: String) : AbstractBTree<Int, Blob>(fileName) {
         var size = 2 * Int.SIZE_BYTES
         var byteBuffer = ByteBuffer.allocate(size)
         storage.readInto(byteBuffer, 0, size)
-        val amountOfData = byteBuffer.int
         val numberOfKeys = byteBuffer.int
+        val amountOfData = byteBuffer.int
         size = amountOfData
         byteBuffer = ByteBuffer.allocate(size)
         storage.readInto(byteBuffer, 0, size)
